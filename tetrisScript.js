@@ -136,7 +136,8 @@ document.addEventListener('keydown', (e) => {
     }
 })
 let score = 0
-const BoardSize = {rows: 20, cols: 10}
+const BoardSize = {rows: 25, cols: 20}
+document.getElementById('scoreDisplay').style.left = (BoardSize.cols * squareSize + 20) + 'px';
 curShape = GenerateNewShape()
 occupiedSquares = InitOccupiedSquares()
 intervalID = setInterval(MainLoop, 300)
