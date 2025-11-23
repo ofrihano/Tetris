@@ -63,6 +63,8 @@ function removeFullLines() {
         }
         occupiedSquares[0] = Array(BoardSize.cols).fill(false)
         fullLines.shift()
+        score = score + BoardSize.col
+        document.getElementById('score').textContent = score 
     }
 }
 
@@ -106,6 +108,22 @@ document.addEventListener('keydown', (e) => {
                 curShape.left++
             }
             break
+        case 'ArrowDown':
+            e.preventDefault()
+            let fastFallInterval = setInterval(() => {
+            movedDownShape = getShape(curShape.shapeType, curShape.top + 1, curShape.left, curShape.shapeOrient)
+            if (IsShapeOccupied(movedDownShape)) {
+                clearInterval(fastFallInterval)
+                AddFallingShapeToOccupiedSquare()
+                removeFullLines()
+                curShape = GenerateNewShape()
+            } else {
+                curShape.squareArr = movedDownShape
+                curShape.top++
+            }
+            DrawFrame()
+            }, 30)
+            break
         case 'ArrowUp':
             e.preventDefault()
             rotatedRightShape = getShape(curShape.shapeType, curShape.top, curShape.left, (curShape.shapeOrient + 1) % 4)
@@ -117,7 +135,7 @@ document.addEventListener('keydown', (e) => {
 
     }
 })
-
+let score = 0
 const BoardSize = {rows: 20, cols: 10}
 curShape = GenerateNewShape()
 occupiedSquares = InitOccupiedSquares()
