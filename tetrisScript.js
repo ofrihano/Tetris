@@ -90,6 +90,8 @@ function MainLoop() {
     }
 }
 
+let fastFallInterval = null
+
 document.addEventListener('keydown', (e) => {
     switch(e.key) {
         case 'ArrowLeft':
@@ -110,10 +112,12 @@ document.addEventListener('keydown', (e) => {
             break
         case 'ArrowDown':
             e.preventDefault()
-            let fastFallInterval = setInterval(() => {
+            if (fastFallInterval) return; // Prevent multiple fast falls
+            fastFallInterval = setInterval(() => {
             movedDownShape = getShape(curShape.shapeType, curShape.top + 1, curShape.left, curShape.shapeOrient)
             if (IsShapeOccupied(movedDownShape)) {
                 clearInterval(fastFallInterval)
+                fastFallInterval = null  // Reset the flag
                 AddFallingShapeToOccupiedSquare()
                 removeFullLines()
                 curShape = GenerateNewShape()
@@ -135,6 +139,15 @@ document.addEventListener('keydown', (e) => {
 
     }
 })
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowDown') {
+        if (fastFallInterval) {
+            clearInterval(fastFallInterval)
+            fastFallInterval = null
+        }
+    }
+})
+
 let score = 0
 const BoardSize = {rows: 25, cols: 20}
 document.getElementById('scoreDisplay').style.left = (BoardSize.cols * squareSize + 20) + 'px';
